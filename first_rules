@@ -1,0 +1,71 @@
+Kiosk requirements:
+
+1. Users select products on a kiosk and place an order.
+2. Payment is only allowed via member-exclusive cards.
+3. Maintain a “Member” table and a “Balance” table so you can track each member’s card balance.
+4. When an order is completed, insert a new record into an “Order” table.
+
+POS requirements:
+
+1. As soon as a new order is inserted in Convex, notify the POS system with the order ID and the list of ordered menu items.
+2. The POS system’s receipt printer should print a receipt showing: order number, order time, and menu items.
+3. The POS backend must support Create, Read, Update, Delete operations on menu items.
+
+Generate:
+
+- `schema.ts` with Convex tables: Member, Balance, Product, Order.
+- `queries.ts` with Convex functions:
+• `placeOrder(memberId: string, productIds: string[]): Order`
+• `getRecentOrdersForPOS(): { orderId: string; time: string; items: string[] }[]`
+• `createProduct`, `updateProduct`, `deleteProduct`, `listProducts`
+- Ensure type-safe TS definitions and automatic streaming updates.
+- Include any necessary configuration for real-time triggers or durable workflows.
+1. Admin users must be able to view all orders.
+2. Orders should be filterable by status: “pending”, “completed”, and “canceled”.
+3. For each order, admins can trigger a “reprintReceipt(orderId: string)” function to regenerate the receipt.
+4. Clicking on any order should open a detail popup containing:
+    - orderTime (ISO timestamp)
+    - orderId (string)
+    - items: an array of { productId: string; name: string; quantity: number; unitPrice: number }
+    - totalPrice (number)
+    - paymentAmount (number)
+
+Generate:
+
+- In `schema.ts`: any additional indexes or tables needed for status and receipts.
+- In `queries.ts`:
+• `listOrders(filter: { status?: 'pending' | 'completed' | 'canceled' }): Order[]`
+• `reprintReceipt(orderId: string): Receipt`
+• `getOrderDetail(orderId: string): { orderTime: string; orderId: string; items: { productId: string; name: string; quantity: number; unitPrice: number }[]; totalPrice: number; paymentAmount: number }`
+
+Ensure all types are fully defined in TypeScript and that real-time filtering and detail-popup triggers work out of the box.
+
+---
+
+---
+
+---
+
+---
+
+---
+
+키오스크
+
+1. 키오스크에서 상품을 선택하여 주문한다.
+2. 결제는 회원 전용 카드로만 가능하다
+3. 결제가 가능한 정보는 회원 테이블이 있고 잔액 테이블을 두고 어떤 회원이 얼마의 잔액을 가지고 있는지 알 수 있다
+4. 주문이 완료되면 주문 저장 테이블에 insert 한다
+
+포스
+
+1. 키오스크에서 주문 후 데이터가 저장되면 바로 포스로 어떤 주문이 생겼고 메뉴는 무엇인지 알려준다
+2. 포스에 연동된 영수증 프린터 기기에서 주문번호와 주문 시간, 메뉴 정보를 표시한 영수증이 나온다
+3. 포스에서는 메뉴에 대한 등록, 수정, 삭제가 가능하다
+
+어드민 
+
+1. admin에서 주문에 대한 내역을 확인 할 수 있다
+2. 주문내역은 pending, completed, cancel 로 나눠서 확인 할 수 있다
+3. 각 주문내역별 영수증 재발행이 가능하다.
+4. 각 주문내역별 클릭 시 상세 화면 팝업이 나오고 내용은 주문 시간, 주문 번호, 메뉴 정보, 가격, 결제 금액이 필요합니다
